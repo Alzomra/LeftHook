@@ -1,8 +1,14 @@
 {
+  "scripts":{
+    "dev" : "nodemon server.js"
+  },
+  "nodemonConfig": {
+    "ignore": ["webhooks/"]
+  },
   "dependencies": {
-    "express": "^4.17.3",
+    "dotenv": "^16.0.1",
+    "koa": "^2.13.4",
     "nodemon": "^2.0.12",
-    "ps-list": "^7.2.0",
-    "secure-compare": "^3.0.1"
+    "ps-list": "^7.2.0"
   }
 }

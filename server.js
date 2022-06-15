@@ -1,30 +1,28 @@
-const express = require('express')
-const secureCompare = require("secure-compare")
+const koa = require('koa')
 const psList = require('ps-list')
+const crypto = require('crypto')
+require('dotenv').config()
+
 var exec = require('child_process').exec , child
 const {spawn} = require('child_process')
-const crypto = require('crypto');
 
 
-const app = express()
-app.use(express.urlencoded({
-    extended : true
-}));
-app.use(express.json());
+
+const app = new koa()
 const port = 4567
 
-var bots = process.env.BOTS.split(":")
-bots.forEach(bot => {
+var repos = process.env.REPOS.split(":")
+var entrys = process.env.ENTRYS.split(":")
+const username = process.env.GITHUBUSERNAME
+const mainToken = process.env.GITHUBTOKEN
+console.log(username)
+/* repos.forEach((repo,index)=> {
     try {
-        exec(`git clone https://${process.env.MAIN_TOKEN}:x-oauth-basic@github.com/Alzomra/${bot} ~/webhooks/${bot}`,
+        exec(`git clone https://oauth2:${mainToken}@github.com/${username}/${repo}.git ./webhooks/${repo}`,
         (error, stdout, stderr)=> {
             if(error === null){
-                console.log(`Successfully Cloned ${bot}`)
-                exec(`cd ~/Desktop/Github/${bot}; python3 ${bot}.py`, (error, stdout, stderr)=> {
-                    console.log(`Successfully Restarted ${bot}`)
-                    console.log(stdout)
-                    console.log(stderr)
-                });
+                console.log(`Successfully Cloned ${repo}`)
+
             }else{
                 console.log("A problem occured." , error)
             }
@@ -32,12 +30,17 @@ bots.forEach(bot => {
     }catch(error){
         console.log(error)
     }
-    
-})
+    console.log
+    exec(`chmod +x ~/webhooks/${repo}/${entrys[index]}; ./${entrys[index]}`, (error, stdout, stderr)=> {
+        console.log(`Successfully Restarted ${repo}`)
+        console.log(stdout)
+        console.log(stderr)
+    });
+}) */
 
 
 
-child = (bot)=> {exec(`cd ~/webhooks/${bot}; git pull https://Alzomra:${process.env.MAIN_TOKEN}@github.com/Alzomra/${bot}`,
+child = (repo)=> {exec(`cd ~/webhooks/${repo}; git pull https://${username}:${mainToken}@github.com/${username}/${repo}`,
 function (error, stdout, stderr) {
     if (error !== null) {
          console.log('exec error: ' + error);
@@ -47,40 +50,49 @@ function (error, stdout, stderr) {
 });
 }
 
-var generateHash = (req) => 'sha256='+ crypto.createHmac('sha256',`${process.env.SECRET_TOKEN}`).update(JSON.stringify(req.body)).digest('hex')
 
-var respawn = (item , req) => {
-    console.log(`python3 ${req.body.repository.name}.py`)
+var respawn = (item,entry , req) => {
+    console.log(`./${entry}`)
     exec(`kill 9 ${item.pid}`,
     (error, stdout, stderr)=> {
-        exec(`cd ~/Desktop/Github/${req.body.repository.name}; python3 Praccforces.py`, (error, stdout, stderr)=> {
-            console.log(`Successfully Restarted ${req.body.repository.name}`)
+        exec(`cd ~/webhooks/${req.body.repository.name}; ./${entry}`, (error, stdout, stderr)=> {
+            console.log(`Successfully Restarted ${entry}`)
             console.log(stdout)
             console.log(stderr)
         });
     });
 }
 
-app.post(`/payload` , (req,res)=>{
-    if (secureCompare(generateHash(req) , req.headers['x-hub-signature-256'])){
+app.use((req,res)=>{
+    const hashPrefix = 'sha256'
+    const reqBody = JSON.stringify(req.body) || ''
+    const Hmac = crypto.createHmac(hashPrefix,`${process.env.SECRET_TOKEN}`)
+    const signature = `${hashPrefix}=${Buffer.from(Hmac.update(reqBody).digest('hex'))}`
+
+    const remoteSignature = Buffer.from(req.headers['x-hub-signature-256']|| '')
+    const mySingature = Buffer.from(signature)
+
+    if (crypto.timingSafeEqual(remoteSignature,mySingature)){
         console.log(req.body.head_commit.modified)
         try{
-            child(req.body.repository.name)
+            //child(req.body.repository.name)
         }catch(error){
             console.log(error)
         }
-        if (req.body.head_commit.modified.includes(`${req.body.repository.name}.py`)){
-            psList().then(res =>{
-                res.forEach(item => {
-                    if (item.cmd.includes(`${req.body.repository.name}.py`)){
-                        console.log(item)
-                        respawn(item , req)
-                    }
+        entrys.forEach((entry,index) => {
+            if (req.body.head_commit.modified.includes(`${entry}`)){
+                psList().then(res =>{
+                    res.forEach(item => {
+                        if (item.cmd.includes(`${entry}`)){
+                            console.log(item)
+                            //respawn(item , entry,req)
+                        }
+                    });
                 });
-            });
-        }
+            }
+        })
     }
-});
+})
 
 
 app.listen(port , ()=>{
