@@ -1,7 +1,7 @@
 # LeftHook
  A lightweight Node.js handler for GitHub webhooks.
 
-# Ngrok setupe
+# Ngrok setup
 
     Download Ngrok executable 
 
