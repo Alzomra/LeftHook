@@ -8,7 +8,7 @@
   "dependencies": {
     "dotenv": "^16.0.1",
     "koa": "^2.13.4",
-    "nodemon": "^2.0.12",
+    "nodemon": "^2.0.17",
     "ps-list": "^7.2.0"
   }
 }
