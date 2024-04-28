@@ -1,4 +1,6 @@
 const { ReturnErrorMessage } = require("./error")
+const { exec, cd, test, mkdir } = require('shelljs')
+const config = require('./config')
 
 exports.getRepoConfig  = (ctx,next) => {
     if (!ctx.request.body?.repository?.html_url){
@@ -21,9 +23,11 @@ exports.checkRepoDirectory  = (ctx,next) => {
     } else {
         cd(repoDirectory)
         exec("git pull")
-        console.log("REPO PULLED AND SCRIPT EXECUTED")
+        console.log("REPO PULLED")
     }
     exec(`${ctx.repositoryConfig.scriptPath}`)
+    console.log("SCRIPT EXECUTED")
+
     next()
 }
 
