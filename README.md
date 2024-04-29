@@ -1,4 +1,4 @@
-# LeftHook
+![lefthook_logo](https://github.com/Alzomra/LeftHook/blob/assets/assets/lefthook.jpg?raw=true)
 
     Lefthook is a lightweight and flexible Git webhook handler designed to streamline your development workflows.
     Whether you’re managing webhooks for continuous integration, deployment, or custom automation, Lefthook has you covered.
@@ -23,7 +23,7 @@ Make sure to provide the repository url, script path (and the webhook secret if 
 "REPO_URL"      : The github repository URL.
 "directory"     : Directory where Lefthook will clone or expect to find the repository.
 "scriptPath"    : The script that will be executed on webhook trigger.
-"webhookSecret" : Webhook secret if configured in the webhook config.
+"webhookSecret" : Webhook secret configured in the webhook config.
 ```
 
 ## Start lefthook
