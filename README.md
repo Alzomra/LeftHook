@@ -7,7 +7,7 @@ Whether you’re managing webhooks for continuous integration,deployment, or cus
 
 ## Environment variables
     
-Copy the .env.example to .env and set the PORT variable to the port that you want tobe used by lefthook.
+Copy the .env.example to .env and set the PORT variable to the port that you want to be used by lefthook.
 
 ```cp .env.example .env```
 
