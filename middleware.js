@@ -2,6 +2,17 @@ const { ReturnErrorMessage } = require("./error")
 const { exec, cd, test, mkdir } = require('shelljs')
 const config = require('./config')
 
+exports.validateWebhook  = (ctx,next) => {
+    if (!ctx.request.headers["x-hub-signature-256"]){
+        return ReturnErrorMessage(ctx,"BAD WEBHOOK PARAM: MISSING SIGNATURE HEADER, PLEASE  CONFIGURE SECRET")
+    }
+
+    if (!ctx.repositoryConfig.webhookSecret)
+        return ReturnErrorMessage(ctx,"CONFIG ERROR: MISSING SECRET")
+    
+    next()
+}
+
 exports.getRepoConfig  = (ctx,next) => {
     if (!ctx.request.body?.repository?.html_url){
         return ReturnErrorMessage(ctx,"BAD WEBHOOK PARAM: MISSING REPOSITORY URL")
