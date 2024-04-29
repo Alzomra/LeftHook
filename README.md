@@ -1,3 +1,4 @@
+![alt text](https://github.com/Alzomra/LeftHook/blob/assets/assets/lefthook.jpg?raw=true)
 # LeftHook
  A lightweight Node.js handler for GitHub webhooks.
 
