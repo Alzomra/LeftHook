@@ -1,7 +1,8 @@
 ![lefthook_logo](https://github.com/Alzomra/LeftHook/blob/assets/assets/lefthook.jpg?raw=true)
 
-Lefthook is a lightweight and flexible Git webhook handlerdesigned to streamline your development workflows.
+Lefthook is a lightweight and flexible Git webhook handler designed to streamline your development workflows.
 Whether you’re managing webhooks for continuous integration,deployment, or custom automation, Lefthook has you covered.
+
 # Setup & Usage
 
 ## Environment variables
