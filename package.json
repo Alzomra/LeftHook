@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@koa/bodyparser": "^5.1.1",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.4.5",
     "koa": "^2.13.4",
     "nodemon": "^2.0.12",
     "ps-list": "^7.2.0",
